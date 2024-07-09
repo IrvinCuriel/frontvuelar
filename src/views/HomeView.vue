@@ -1,18 +1,76 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div class="row">
+    <div class="col-lg-8 offset-lg-2">
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>ID</th>
+              <th>FOTO</th>
+              <th>NOMBRE</th>
+              <th>APELLIDO</th>
+              <th>Registro</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody class="table-group-divider" id="contenido">
+            <tr v-if="this.cargando">
+              <td colspan="6"><h3>Cargando...</h3></td>
+            </tr>
+            <tr v-else v-for="est, i in this.estudiantes" :key="est.id">
+              <td v-text="(i+1)"></td>
+              <td v-text="est.id"></td>
+              <td>
+                <img v-if="est.foto" style="width: 150px !important;" :src="est.foto" class="img-thumbnail" alt="">
+                <img v-else style="width: 150px !important;" src="https://cdn4.iconfinder.com/data/icons/small-n-flat/24/user-512.png" class="img-thumbnail" alt="">
+              </td>
+              <td v-text="est.nombre"></td>
+              <td v-text="est.apellido"></td>
+              <td v-text="new Date(est.created_at).toLocaleDateString('en-US')"></td>
+              <td>
+                <router-link :to="{path:'view/'+est.id}" class="btn btn-info">
+                  <i class="fa-solid fa-eye"></i>
+                </router-link>
+                &nbsp;
+                <router-link :to="{path:'edit/'+est.id}" class="btn btn-warning">
+                  <i class="fa-solid fa-edit"></i>
+                </router-link>
+                &nbsp;
+                <button class="btn btn-danger">
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
-
-export default {
-  name: 'HomeView',
-  components: {
-    HelloWorld
+  import axios from 'axios';
+  export default{
+    data(){
+      return{
+        estudiantes:null,
+        cargando:false
+      }
+    },
+    mounted(){
+      this.getEstudiantes();
+    },
+    methods:{
+      getEstudiantes(){
+        this.cargando = true;
+        axios.get('http://127.0.0.1:8000/api/v1/estudiantes').then(
+          res => {
+            this.estudiantes = res.data;
+            this.cargando = false;
+          }
+        );
+      }
+    }
   }
-}
 </script>
