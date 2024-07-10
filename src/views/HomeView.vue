@@ -37,7 +37,7 @@
                   <i class="fa-solid fa-edit"></i>
                 </router-link>
                 &nbsp;
-                <button class="btn btn-danger">
+                <button class="btn btn-danger" v-on:click="eliminar(est.id, est.nombre)">
                   <i class="fa-solid fa-trash"></i>
                 </button>
               </td>
@@ -51,6 +51,7 @@
 
 <script>
   import axios from 'axios';
+  import {confirmar} from '../funciones';
   export default{
     data(){
       return{
@@ -70,6 +71,10 @@
             this.cargando = false;
           }
         );
+      },
+      eliminar(id,nombre){
+        confirmar('http://127.0.0.1:8000/api/v1/estudiantes/',id,'Eliminar registro','Realmente desea eliminar a '+nombre+' ?');
+        this.cargando = false;
       }
     }
   }
